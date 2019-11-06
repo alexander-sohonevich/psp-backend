@@ -1,0 +1,5 @@
+#statusServerWindow {
+    -fx-background-color: black;
+    -fx-border-color: yellow;
+    -fx-border-width: 5;
+}

@@ -1,0 +1,43 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import java.lang.*?>
+<?import java.util.*?>
+<?import javafx.scene.control.*?>
+<?import javafx.scene.layout.*?>
+<?import javafx.scene.paint.*?>
+<?import javafx.scene.text.*?>
+
+<AnchorPane fx:id="mainAnchorPane" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="878.0" prefWidth="1000.0" xmlns:fx="http://javafx.com/fxml/1" xmlns="http://javafx.com/javafx/2.2" fx:controller="UI_Application.Controller">
+  <children>
+    <BorderPane layoutX="0.0" layoutY="0.0" prefHeight="878.0" prefWidth="1000.0">
+      <center>
+        <Pane prefHeight="678.0" prefWidth="400.0">
+          <children>
+            <Pane id="statusServerWindow" layoutX="0.0" layoutY="0.0" prefHeight="200.0" prefWidth="300.0">
+              <children>
+                <Label fx:id="serverStatus" layoutX="90.0" layoutY="89.0" style="-fx-text-fill: red;&#10;" text="Не активен">
+                  <font>
+                    <Font name="Monospaced Bold Italic" size="20.0" />
+                  </font>
+                </Label>
+                <Label layoutX="23.0" layoutY="21.0" style="-fx-text-fill: white;" text="Статус сервера">
+                  <font>
+                    <Font name="Arial Bold Italic" size="30.0" />
+                  </font>
+                </Label>
+                <Button id="Запустить" fx:id="runServer" layoutX="14.0" layoutY="137.0" mnemonicParsing="false" prefHeight="33.9609375" prefWidth="121.0" text="Запуск" />
+                <Button fx:id="stopServer" layoutX="165.0" layoutY="137.0" mnemonicParsing="false" prefHeight="33.9609375" prefWidth="121.0" text="Стоп" />
+              </children>
+            </Pane>
+          </children>
+        </Pane>
+      </center>
+      <left>
+        <Pane prefHeight="200.0" prefWidth="300.0" />
+      </left>
+      <top>
+        <Pane prefHeight="200.0" prefWidth="200.0" />
+      </top>
+    </BorderPane>
+  </children>
+</AnchorPane>

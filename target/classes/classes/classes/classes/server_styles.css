@@ -1,0 +1,9 @@
+#statusServerWindow {
+    -fx-background-color: black;
+    -fx-border-color: yellow;
+    -fx-border-width: 5;
+}
+
+#mainAnchorPane {
+    -fx-background-color: black;
+}
