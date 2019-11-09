@@ -1,8 +1,7 @@
 package Server;
 
-import java.sql.Connection;
-import java.sql.DriverManager;
-import java.sql.SQLException;
+import java.sql.*;
+import java.util.Scanner;
 
 public class Database {
 
@@ -18,7 +17,7 @@ public class Database {
             connection = DriverManager.getConnection(URL, USER, PASS);
             if (!connection.isClosed()) {
                 connected = true;
-                System.out.println("Connection succeed!");
+                System.out.println("Connection to DB succeed!");
             }
         } catch (SQLException e) {
             System.out.println(e.getErrorCode());
@@ -42,5 +41,15 @@ public class Database {
 
     public Connection getConnection() {
         return connection;
+    }
+
+    public ResultSet select(String sql) {
+        try (Statement statement = connection.createStatement()) {
+            ResultSet resultSet = statement.executeQuery(sql);
+            return resultSet;
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+        return null;
     }
 }
