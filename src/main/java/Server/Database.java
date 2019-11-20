@@ -4,7 +4,6 @@ import java.sql.*;
 import java.util.Scanner;
 
 public class Database {
-
     private static Connection connection;
     private boolean connected = false;
 

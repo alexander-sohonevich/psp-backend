@@ -19,9 +19,11 @@ public class Service {
             tcpConnection.sendString("1");
             switch (user.getUserRole()) {
                 case ("Администратор"):
+                    Admin.admin(conn, tcpConnection);
                     break;
 
                 case ("Пользователь"):
+                    MainApplication.User.user(conn, tcpConnection);
                     break;
 
             }

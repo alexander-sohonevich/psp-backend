@@ -1,32 +1,25 @@
 package Server;
 
-import Entities.User;
 import MainApplication.Service;
-import UI_Application.Controller;
-import UI_Application.Main;
-import javafx.application.Application;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
-import javafx.fxml.FXMLLoader;
-import javafx.scene.Parent;
-import javafx.scene.Scene;
-import javafx.stage.Stage;
 
 import java.io.IOException;
 import java.net.ServerSocket;
-import java.util.ArrayList;
 
-import static javafx.application.Application.launch;
 
-public class Server implements TCPListener {
+public class Server<tcpConnection> implements TCPListener {
 
     private final ObservableList<TCPConnection> connections = FXCollections.observableArrayList();
     private final Database conn;
-    //private ObservableList<Client> clientsData = FXCollections.observableArrayList();
 
-    static final String DB_URL = "jdbc:postgresql://127.0.0.1:5432/Cars";
-    static final String USER = "java_admin";
-    static final String PASSWORD = "admin";
+
+    static final String DB_URL = "jdbc:mysql://localhost:3306/salers?" +
+            "&useJDBCCompliantTimezoneShift=true" +
+            "&useLegacyDatetimeCode=false" +
+            "&serverTimezone=Europe/Moscow";
+    static final String USER = "root";
+    static final String PASSWORD = "@dmin001";
 
 
     public Server() {

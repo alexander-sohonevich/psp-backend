@@ -49,16 +49,22 @@ public class TCPConnection {
         }
     }
 
-    public synchronized String receiveUser() {
+    public synchronized String receiveString() {
         try {
-            System.out.println(in.readLine());
-            return null;
+            String receivedString = in.readLine();
+            return receivedString;
         } catch (IOException e) {
             e.printStackTrace();
         }
         return null;
     }
 
+    public synchronized Boolean ping() {
+        if (socket.isConnected()) {
+            return true;
+        }
+        return false;
+    }
 
     public synchronized void disconnect() {
         rxThread.interrupt();

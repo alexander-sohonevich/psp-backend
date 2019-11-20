@@ -1,16 +1,11 @@
 package Entities;
 
 import Server.Database;
-import org.json.JSONObject;
 
-import java.io.FileReader;
-import java.io.IOException;
-import java.nio.file.Files;
-import java.nio.file.Paths;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
-import java.util.Scanner;
+
 
 public class User {
     private String login;
@@ -28,15 +23,16 @@ public class User {
 
     public void authorization(Database conn) {
         try {
-            String query = "SELECT * FROM public.\"USERS\"";
+            String query = "SELECT * FROM USERS " +
+                    "WHERE LOGIN='"+ login + "'";
 
             Statement statement = conn.getConnection().createStatement();
             ResultSet rs = statement.executeQuery(query);
 
             while (rs.next()) {
-                String loginDB = rs.getString("login");
-                String passwordDB = rs.getString("password");
-                String userRoleDB = rs.getString("userRole");
+                String loginDB = rs.getString("LOGIN");
+                String passwordDB = rs.getString("PASSWORD");
+                String userRoleDB = rs.getString("USER_ROLE");
 
                 if (validation(loginDB, passwordDB, userRoleDB)) {
                     authorization = true;
@@ -57,6 +53,56 @@ public class User {
             return true;
         }
         return false;
+    }
+
+    public String addUser(User user, Database conn) {
+        try {
+            String checkQuery = "SELECT LOGIN FROM USERS WHERE LOGIN='" + user.getLogin() + "'";
+
+            Statement statement = conn.getConnection().createStatement();
+            ResultSet rs = statement.executeQuery(checkQuery);
+
+            while (rs.next()) {
+                String loginDB = rs.getString("LOGIN");
+
+                if (loginDB.equals(user.getLogin())) {
+                    statement.close();
+                    rs.close();
+                    return "Данный пользователь уже существует";
+                }
+            }
+
+            String insertQuery = "INSERT INTO users " +
+                    "VALUES ('%s','%s','%s')";
+
+            insertQuery = String.format(insertQuery, user.getLogin(), user.getPassword(), user.getUserRole());
+
+            Boolean check = statement.execute(insertQuery);
+
+            statement.close();
+            rs.close();
+
+            if (!check) {
+                return "Успешно";
+            } else {
+                return "Ошибка записи";
+            }
+
+
+        } catch (SQLException s) {
+            System.err.println(s);
+            s.setNextException(s);
+        }
+
+        return "";
+    }
+
+    public String getLogin() {
+        return login;
+    }
+
+    public String getPassword() {
+        return password;
     }
 
     public String getUserRole() {

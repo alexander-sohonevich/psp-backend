@@ -15,11 +15,8 @@ public class Controller {
 
     public void initialize() {
 
-
         mainAnchorPane.setVisible(true);
         usersList.setVisible(true);
-
-
 
     }
 
