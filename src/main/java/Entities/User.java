@@ -14,6 +14,12 @@ public class User {
 
     private Boolean authorization;
 
+    public User(String login) {
+        this.login = login;
+        this.password = "";
+        this.userRole = "";
+    }
+
     public User(String login, String password, String userRole) {
         this.login = login;
         this.password = password;
@@ -24,7 +30,7 @@ public class User {
     public void authorization(Database conn) {
         try {
             String query = "SELECT * FROM USERS " +
-                    "WHERE LOGIN='"+ login + "'";
+                    "WHERE LOGIN='" + login + "'";
 
             Statement statement = conn.getConnection().createStatement();
             ResultSet rs = statement.executeQuery(query);
@@ -55,9 +61,9 @@ public class User {
         return false;
     }
 
-    public String addUser(User user, Database conn) {
+    public String addUser(Database conn) {
         try {
-            String checkQuery = "SELECT LOGIN FROM USERS WHERE LOGIN='" + user.getLogin() + "'";
+            String checkQuery = "SELECT LOGIN FROM USERS WHERE LOGIN='" + this.login + "'";
 
             Statement statement = conn.getConnection().createStatement();
             ResultSet rs = statement.executeQuery(checkQuery);
@@ -65,7 +71,7 @@ public class User {
             while (rs.next()) {
                 String loginDB = rs.getString("LOGIN");
 
-                if (loginDB.equals(user.getLogin())) {
+                if (loginDB.equals(this.login)) {
                     statement.close();
                     rs.close();
                     return "Данный пользователь уже существует";
@@ -75,7 +81,7 @@ public class User {
             String insertQuery = "INSERT INTO users " +
                     "VALUES ('%s','%s','%s')";
 
-            insertQuery = String.format(insertQuery, user.getLogin(), user.getPassword(), user.getUserRole());
+            insertQuery = String.format(insertQuery, this.login, this.password, this.userRole);
 
             Boolean check = statement.execute(insertQuery);
 
@@ -95,6 +101,27 @@ public class User {
         }
 
         return "";
+    }
+
+    public String deleteUser(Database conn) {
+        try {
+            String deleteQuery = "DELETE FROM USERS WHERE LOGIN='" + this.login + "'";
+            Statement statement = conn.getConnection().createStatement();
+            Boolean rs = statement.execute(deleteQuery);
+            statement.close();
+
+            if (!rs) {
+                return "Успешно";
+            } else {
+                return "Ошибка удаления";
+            }
+
+        } catch (SQLException s) {
+            System.err.println(s);
+            s.setNextException(s);
+        }
+
+        return "Ошибка удаления";
     }
 
     public String getLogin() {

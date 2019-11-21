@@ -42,13 +42,27 @@ public class Database {
         return connection;
     }
 
-    public ResultSet select(String sql) {
-        try (Statement statement = connection.createStatement()) {
-            ResultSet resultSet = statement.executeQuery(sql);
-            return resultSet;
+    public void commit() {
+        try {
+            connection.commit();
         } catch (SQLException e) {
-            e.printStackTrace();
+            System.err.println(e);
         }
-        return null;
+    }
+
+    public void rollback() {
+        try {
+            connection.rollback();
+        } catch (SQLException e) {
+            System.err.println(e);
+        }
+    }
+
+    public void setAutoCommit(Boolean commit) {
+        try {
+            connection.setAutoCommit(commit);
+        } catch (SQLException e) {
+            System.err.println(e);
+        }
     }
 }

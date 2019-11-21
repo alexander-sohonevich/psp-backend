@@ -13,7 +13,6 @@ public class Server<tcpConnection> implements TCPListener {
     private final ObservableList<TCPConnection> connections = FXCollections.observableArrayList();
     private final Database conn;
 
-
     static final String DB_URL = "jdbc:mysql://localhost:3306/salers?" +
             "&useJDBCCompliantTimezoneShift=true" +
             "&useLegacyDatetimeCode=false" +
@@ -39,7 +38,7 @@ public class Server<tcpConnection> implements TCPListener {
         }
     }
 
-    public ObservableList<TCPConnection> getTCPConnections() {
+    public  ObservableList<TCPConnection> getTCPConnections() {
         return connections;
     }
 

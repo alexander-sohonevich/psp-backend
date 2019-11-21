@@ -1,9 +1,13 @@
 package Entities;
 
 import Server.Database;
+import com.google.gson.Gson;
+import com.google.gson.JsonParser;
 import org.json.JSONObject;
 import org.testng.annotations.Test;
 
+import java.lang.reflect.Type;
+import java.sql.Connection;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
@@ -54,40 +58,6 @@ public class Car {
         this.salonColor = salonColor;
         this.multimediaSystem = multimediaSystem;
         this.wheelDiameter = wheelDiameter;
-        this.transmission = transmission;
-    }
-
-    public Car(String jsonString) {
-
-        JSONObject carJson = new JSONObject(jsonString);
-
-        String brand = carJson.getString("brand");
-        String model = carJson.getString("model");
-        String yearOfIssue = carJson.getString("yearOfIssue");
-        String cost = carJson.getString("cost");
-        String vinCode = carJson.getString("vinCode");
-        String bodyType = carJson.getString("bodyType");
-        String bodyColor = carJson.getString("bodyColor");
-        String numberOfDoors = carJson.getString("numberOfDoors");
-        String salon = carJson.getString("salon");
-        String salonColor = carJson.getString("salonColor");
-        String multimediaSystem = carJson.getString("multimediaSystem");
-        String transmission = carJson.getString("transmission");
-        String wheelDiameter = carJson.getString("wheelDiameter");
-
-
-        this.brand = brand;
-        this.model = model;
-        this.yearOfIssue = Integer.parseInt(yearOfIssue);
-        this.cost = Double.parseDouble(cost);
-        this.vinCode = vinCode;
-        this.bodyType = bodyType;
-        this.bodyColor = bodyColor;
-        this.numberOfDoors = Integer.parseInt(numberOfDoors);
-        this.salon = salon;
-        this.salonColor = salonColor;
-        this.multimediaSystem = multimediaSystem;
-        this.wheelDiameter = Double.parseDouble(wheelDiameter);
         this.transmission = transmission;
     }
 
@@ -213,6 +183,9 @@ public class Car {
         String query = "INSERT INTO SOLD_CARS " +
                 "VALUES ('%s', '%s' , '%s', '%s')";
 
+        String updateQuery = "UPDATE CAR_STATUS c " +
+                "SET c.CAR_STATUS='Продано' WHERE c.VIN_CODE='%s'";
+
         JSONObject jsonObject = new JSONObject(sellingCarJSON);
 
         String vinCodeJSON = jsonObject.getString("vinCode");
@@ -222,6 +195,105 @@ public class Car {
 
         query = String.format(query, vinCodeJSON, buyerSurnameJSON, buyerNameJSON, buyerIDJSON);
 
+        updateQuery = String.format(updateQuery, vinCodeJSON);
+
+        conn.setAutoCommit(false);
+
+        try {
+            Statement statement = conn.getConnection().createStatement();
+
+            Boolean rs = statement.execute(query);
+
+            if (!rs) {
+                statement.close();
+                return "Ошибка";
+            }
+
+            rs = statement.execute(updateQuery);
+
+            statement.close();
+
+            if (rs) {
+
+                conn.setAutoCommit(true);
+                return "Успешно";
+            } else {
+                return "Ошибка";
+            }
+
+        } catch (SQLException s) {
+            System.err.println(s);
+            s.setNextException(s);
+        }
+        conn.setAutoCommit(true);
+        return "Ошибка";
+    }
+
+   // public String updateCar(Database conn, String sellingCarJSON) {
+
+//        String query = "INSERT INTO SOLD_CARS " +
+//                "VALUES ('%s', '%s' , '%s', '%s')";
+//
+//        String updateQuery = "UPDATE CAR_STATUS c " +
+//                "SET c.CAR_STATUS='Продано' WHERE c.VIN_CODE='%s'";
+//
+//        JSONObject jsonObject = new JSONObject(sellingCarJSON);
+//
+//        String vinCodeJSON = jsonObject.getString("vinCode");
+//        String buyerSurnameJSON = jsonObject.getString("buyerSurname");
+//        String buyerNameJSON = jsonObject.getString("buyerName");
+//        String buyerIDJSON = jsonObject.getString("buyerID");
+//
+//        query = String.format(query, vinCodeJSON, buyerSurnameJSON, buyerNameJSON, buyerIDJSON);
+//
+//        updateQuery = String.format(updateQuery, vinCodeJSON);
+//
+//        conn.setAutoCommit(false);
+//
+//        try {
+//            Statement statement = conn.getConnection().createStatement();
+//
+//            Boolean rs = statement.execute(query);
+//
+//            if (!rs) {
+//                statement.close();
+//                return "Ошибка";
+//            }
+//
+//            rs = statement.execute(updateQuery);
+//
+//            statement.close();
+//
+//            if (rs) {
+//
+//                conn.setAutoCommit(true);
+//                return "Успешно";
+//            } else {
+//                return "Ошибка";
+//            }
+//
+//        } catch (SQLException s) {
+//            System.err.println(s);
+//            s.setNextException(s);
+//        }
+//        conn.setAutoCommit(true);
+//        return "Ошибка";
+    //}
+
+    public String orderCar(Database conn, String orderCarJSON) {
+
+        String query = "INSERT INTO ORDERED_CARS " +
+                "VALUES ('%s', '%s' , '%s', '%s')";
+
+        JSONObject jsonObject = new JSONObject(orderCarJSON);
+
+        String vinCodeJSON = jsonObject.getString("vinCode");
+        String buyerSurnameJSON = jsonObject.getString("buyerSurname");
+        String buyerNameJSON = jsonObject.getString("buyerName");
+        String buyerPhoneJSON = jsonObject.getString("buyerPhone");
+
+        query = String.format(query, vinCodeJSON, buyerSurnameJSON, buyerNameJSON, buyerPhoneJSON);
+
         try {
             Statement statement = conn.getConnection().createStatement();
             Boolean rs = statement.execute(query);
@@ -229,8 +301,7 @@ public class Car {
 
             if (rs) {
                 return "Успешно";
-            }
-            else {
+            } else {
                 return "Ошибка";
             }
 
@@ -245,131 +316,110 @@ public class Car {
     public String getBrand() {
         return brand;
     }
-
     public void setBrand(String brand) {
         this.brand = brand;
     }
-
     public String getModel() {
         return model;
     }
-
     public void setModel(String model) {
         this.model = model;
     }
-
     public int getYearOfIssue() {
         return yearOfIssue;
     }
-
     public void setYearOfIssue(int yearOfIssue) {
         this.yearOfIssue = yearOfIssue;
     }
-
     public double getCost() {
         return cost;
     }
-
     public void setCost(double cost) {
         this.cost = cost;
     }
-
     public String getVinCode() {
         return vinCode;
     }
-
     public void setVinCode(String vinCode) {
         this.vinCode = vinCode;
     }
-
     public String getBodyType() {
         return bodyType;
     }
-
     public void setBodyType(String bodyType) {
         this.bodyType = bodyType;
     }
-
     public String getBodyColor() {
         return bodyColor;
     }
-
     public void setBodyColor(String bodyColor) {
         this.bodyColor = bodyColor;
     }
-
     public int getNumberOfDoors() {
         return numberOfDoors;
     }
-
     public void setNumberOfDoors(int numberOfDoors) {
         this.numberOfDoors = numberOfDoors;
     }
-
     public String getSalon() {
         return salon;
     }
-
     public void setSalon(String salon) {
         this.salon = salon;
     }
-
     public String getSalonColor() {
         return salonColor;
     }
-
     public void setSalonColor(String salonColor) {
         this.salonColor = salonColor;
     }
-
     public String getMultimediaSystem() {
         return multimediaSystem;
     }
-
     public void setMultimediaSystem(String multimediaSystem) {
         this.multimediaSystem = multimediaSystem;
     }
-
     public double getWheelDiameter() {
         return wheelDiameter;
     }
-
     public void setWheelDiameter(double wheelDiameter) {
         this.wheelDiameter = wheelDiameter;
     }
-
     public String getTransmission() {
         return transmission;
     }
-
     public void setTransmission(String transmission) {
         this.transmission = transmission;
     }
 
     @Override
     public String toString() {
-        return "{ " +
-                "\"brand\":  \"" + brand + "\", " +
-                "\"model\":  \"" + model + " \", " +
-                "\"yearOfIssue\": \" " + yearOfIssue + "  \", " +
-                "\"cost\":  \"" + cost + "\", " +
-                "\"vinCode\": \"" + vinCode + "\", " +
-                "\"bodyType\": \"" + bodyType + "\", " +
-                "\"bodyColor\": \"" + bodyColor + "\", " +
-                "\"numberOfDoors\": \"" + numberOfDoors + " \", " +
-                "\"salon\": \"" + salon + "\", " +
-                "\"salonColor\": \"" + salonColor + "\", " +
-                "\"multimediaSystem\": \"" + multimediaSystem + "\", " +
-                "\"transmission\": \"" + transmission + "\", " +
-                "\"wheelDiameter\": \"" + wheelDiameter + "\" " +
-                "}";
+        Gson gson = new Gson();
+        return gson.toJson(this);
     }
 
     @Test
     public void test() {
-        Car car1 = new Car();
+        String jsonString = "{ " +
+                "\"brand\":\"TOYOTA\", " +
+                "\"model\":  \"RAV4\", " +
+                "\"yearOfIssue\": 2002, " +
+                "\"cost\":  2322, " +
+                "\"vinCode\": \"551DFGDSG6SDFGDF155\", " +
+                "\"bodyType\": \"Купе\", " +
+                "\"bodyColor\": \"Синий\", " +
+                "\"numberOfDoors\": 5, " +
+                "\"salon\": \"Кожа\", " +
+                "\"salonColor\": \"Синий\", " +
+                "\"multimediaSystem\": \"РАдио\", " +
+                "\"transmission\": \"4WD\", " +
+                "\"wheelDiameter\": 19 " +
+                "}";
 
-        System.out.println(car1.toString());
+        Gson gson = new Gson();
+        Car car = gson.fromJson(jsonString, Car.class);
+
+        System.out.println(car.toString());
 
     }
 }
