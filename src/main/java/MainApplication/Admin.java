@@ -17,10 +17,10 @@ public class Admin {
                     deleteUser(conn, tcpConnection);
                     break;
                 case "UPDATE PASSWORD":
-                    //sellingCar(conn, tcpConnection);
+                    updateUserPassword(conn, tcpConnection);
                     break;
                 case "VIEW ALL USERS":
-                    //updateCar(conn, tcpConnection);
+                    viewAllUsers(conn, tcpConnection);
                     break;
             }
 
@@ -39,6 +39,15 @@ public class Admin {
         tcpConnection.sendString(user.deleteUser(conn));
     }
 
-    private
+    private static void updateUserPassword(Database conn, TCPConnection tcpConnection) {
+        Entities.User user = new Entities.User(tcpConnection.receiveString());
+        tcpConnection.sendString(user.updateUserPassword(conn));
+    }
+
+    private static void viewAllUsers(Database conn, TCPConnection tcpConnection) {
+        Entities.User user = new Entities.User(tcpConnection.receiveString());
+        tcpConnection.sendString(user.viewAllUsers(conn));
+    }
+
 
 }
