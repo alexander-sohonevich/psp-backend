@@ -3,6 +3,7 @@ package MainApplication;
 import Entities.Car;
 import Server.Database;
 import Server.TCPConnection;
+import com.google.gson.Gson;
 
 public class User {
 
@@ -20,8 +21,11 @@ public class User {
                 case "SELLING CAR":
                     sellingCar(conn, tcpConnection);
                     break;
-                case "UPDATE ALL CARS":
-                    updateAllCars(conn, tcpConnection);
+                case "UPDATE CAR":
+                    updateCar(conn, tcpConnection);
+                    break;
+                case "ORDER CAR":
+                    orderCar(conn, tcpConnection);
                     break;
             }
 
@@ -29,9 +33,12 @@ public class User {
     }
 
     private static void addCar(Database conn, TCPConnection tcpConnection) {
-        String jsonCar = tcpConnection.receiveString();
-        Car car = new Car(jsonCar);
+        Gson gson = new Gson();
+
+        Car car = gson.fromJson(tcpConnection.receiveString(), Car.class);
+
         tcpConnection.sendString(car.setObjectToDB(conn));
+
         return;
     }
 
@@ -42,6 +49,9 @@ public class User {
         switch (calledFunction) {
             case "ORDER":
                 jsonArray = car.getFilteredCars(conn, "Под заказ");
+                break;
+            case "ORDERED":
+                jsonArray = car.getFilteredCars(conn, "Заказан");
                 break;
             case "SOLD":
                 jsonArray = car.getFilteredCars(conn, "Продано");
@@ -60,8 +70,19 @@ public class User {
         tcpConnection.sendString(result);
     }
 
-    private static void updateAllCars(Database conn, TCPConnection tcpConnection) {
+    private static void updateCar(Database conn, TCPConnection tcpConnection) {
+        Car car = new Car();
 
+       // String result = car.updateCar(conn, tcpConnection.receiveString());
+
+    }
+
+    private static void orderCar(Database conn, TCPConnection tcpConnection) {
+        Car car = new Car();
+
+        String result = car.orderCar(conn, tcpConnection.receiveString());
+
+        tcpConnection.sendString(result);
     }
 
 }
