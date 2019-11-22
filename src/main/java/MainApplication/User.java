@@ -71,10 +71,11 @@ public class User {
     }
 
     private static void updateCar(Database conn, TCPConnection tcpConnection) {
-        Car car = new Car();
-
-       // String result = car.updateCar(conn, tcpConnection.receiveString());
-
+        Gson gson = new Gson();
+        Car car = gson.fromJson(tcpConnection.receiveString(), Car.class);
+        String updateTable = tcpConnection.receiveString();
+        String result = car.updateCar(conn, updateTable);
+        tcpConnection.sendString(result);
     }
 
     private static void orderCar(Database conn, TCPConnection tcpConnection) {

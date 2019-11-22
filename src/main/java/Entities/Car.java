@@ -229,56 +229,57 @@ public class Car {
         return "Ошибка";
     }
 
-   // public String updateCar(Database conn, String sellingCarJSON) {
+    public String updateCar(Database conn, String updateTable) {
 
-//        String query = "INSERT INTO SOLD_CARS " +
-//                "VALUES ('%s', '%s' , '%s', '%s')";
-//
-//        String updateQuery = "UPDATE CAR_STATUS c " +
-//                "SET c.CAR_STATUS='Продано' WHERE c.VIN_CODE='%s'";
-//
-//        JSONObject jsonObject = new JSONObject(sellingCarJSON);
-//
-//        String vinCodeJSON = jsonObject.getString("vinCode");
-//        String buyerSurnameJSON = jsonObject.getString("buyerSurname");
-//        String buyerNameJSON = jsonObject.getString("buyerName");
-//        String buyerIDJSON = jsonObject.getString("buyerID");
-//
-//        query = String.format(query, vinCodeJSON, buyerSurnameJSON, buyerNameJSON, buyerIDJSON);
-//
-//        updateQuery = String.format(updateQuery, vinCodeJSON);
-//
-//        conn.setAutoCommit(false);
-//
-//        try {
-//            Statement statement = conn.getConnection().createStatement();
-//
-//            Boolean rs = statement.execute(query);
-//
-//            if (!rs) {
-//                statement.close();
-//                return "Ошибка";
-//            }
-//
-//            rs = statement.execute(updateQuery);
-//
-//            statement.close();
-//
-//            if (rs) {
-//
-//                conn.setAutoCommit(true);
-//                return "Успешно";
-//            } else {
-//                return "Ошибка";
-//            }
-//
-//        } catch (SQLException s) {
-//            System.err.println(s);
-//            s.setNextException(s);
-//        }
-//        conn.setAutoCommit(true);
-//        return "Ошибка";
-    //}
+        String updateQuery = "";
+
+        switch (updateTable) {
+            case "TRANSMISSION":
+                updateQuery = "   UPDATE TRANSMISSION   " +
+                        "   SET TRANSMISSION='%s',  WHEEL_DIAMETER=%s  " +
+                        "  WHERE  VIN_CODE='%s'";
+                updateQuery = String.format(updateQuery, this.transmission, this.wheelDiameter, this.vinCode);
+                break;
+            case "AUTO":
+                updateQuery = "   UPDATE AUTO    " +
+                        "   SET BRAND='%s',  MODEL='%s', YEAR_OF_ISSUE=%s, COST=%s " +
+                        "  WHERE  VIN_CODE='%s'";
+                updateQuery = String.format(updateQuery, this.brand, this.model, this.yearOfIssue, this.cost, this.vinCode);
+                break;
+            case "BODY":
+                updateQuery = "   UPDATE BODY   " +
+                        "  SET  BODY_TYPE='%s', BODY_COLOR='%s', NUMBER_OF_DOORS=%s " +
+                        "  WHERE  VIN_CODE='%s'";
+                updateQuery = String.format(updateQuery, this.bodyType, this.bodyColor, this.numberOfDoors, this.vinCode);
+                break;
+            case "SYSTEMS":
+                updateQuery = "   UPDATE SYSTEMS    " +
+                        "  SET SALON='%s', SALON_COLOR='%s',  MUTLIMEDIA_SYSTEM='%s' " +
+                        "  WHERE  VIN_CODE='%s'";
+                updateQuery = String.format(updateQuery, this.salon, this.salonColor, this.multimediaSystem, this.vinCode);
+                break;
+        }
+
+        try {
+            Statement statement = conn.getConnection().createStatement();
+
+            Boolean rs = statement.execute(updateQuery);
+
+            statement.close();
+
+            if (rs) {
+                return "Успешно";
+            } else {
+                return "Ошибка";
+            }
+
+        } catch (SQLException s) {
+            System.err.println(s);
+            s.setNextException(s);
+        }
+
+        return "Ошибка";
+    }
 
     public String orderCar(Database conn, String orderCarJSON) {
 
@@ -316,78 +317,103 @@ public class Car {
     public String getBrand() {
         return brand;
     }
+
     public void setBrand(String brand) {
         this.brand = brand;
     }
+
     public String getModel() {
         return model;
     }
+
     public void setModel(String model) {
         this.model = model;
     }
+
     public int getYearOfIssue() {
         return yearOfIssue;
     }
+
     public void setYearOfIssue(int yearOfIssue) {
         this.yearOfIssue = yearOfIssue;
     }
+
     public double getCost() {
         return cost;
     }
+
     public void setCost(double cost) {
         this.cost = cost;
     }
+
     public String getVinCode() {
         return vinCode;
     }
+
     public void setVinCode(String vinCode) {
         this.vinCode = vinCode;
     }
+
     public String getBodyType() {
         return bodyType;
     }
+
     public void setBodyType(String bodyType) {
         this.bodyType = bodyType;
     }
+
     public String getBodyColor() {
         return bodyColor;
     }
+
     public void setBodyColor(String bodyColor) {
         this.bodyColor = bodyColor;
     }
+
     public int getNumberOfDoors() {
         return numberOfDoors;
     }
+
     public void setNumberOfDoors(int numberOfDoors) {
         this.numberOfDoors = numberOfDoors;
     }
+
     public String getSalon() {
         return salon;
     }
+
     public void setSalon(String salon) {
         this.salon = salon;
     }
+
     public String getSalonColor() {
         return salonColor;
     }
+
     public void setSalonColor(String salonColor) {
         this.salonColor = salonColor;
     }
+
     public String getMultimediaSystem() {
         return multimediaSystem;
     }
+
     public void setMultimediaSystem(String multimediaSystem) {
         this.multimediaSystem = multimediaSystem;
     }
+
     public double getWheelDiameter() {
         return wheelDiameter;
     }
+
     public void setWheelDiameter(double wheelDiameter) {
         this.wheelDiameter = wheelDiameter;
     }
+
     public String getTransmission() {
         return transmission;
     }
+
     public void setTransmission(String transmission) {
         this.transmission = transmission;
     }

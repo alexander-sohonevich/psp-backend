@@ -124,6 +124,57 @@ public class User {
         return "Ошибка удаления";
     }
 
+    public String updateUserPassword(Database conn) {
+        try {
+            String updateQuery = "UPDATE USERS SET PASSWORD = '" +
+                    this.password + "' WHERE LOGIN='" +
+                    this.login + "'";
+            Statement statement = conn.getConnection().createStatement();
+
+            Boolean rs = statement.execute(updateQuery);
+            statement.close();
+
+
+        } catch (SQLException e) {
+            System.err.println(e);
+        }
+        return "Ошибка";
+    }
+
+    public String viewAllUsers(Database conn) {
+        try {
+
+            String result = "[";
+
+            String selectQuery = "SELECT LOGIN, USER_ROLE " +
+                    "FROM USERS";
+            Statement statement = conn.getConnection().createStatement();
+
+            ResultSet rs = statement.executeQuery(selectQuery);
+
+            while (rs.next()) {
+                String row = "{ \"login\" : \"" + rs.getString("LOGIN") + "\", " +
+                        " \"userRole\" : \"" + rs.getString("USER_ROLE") + "\" }, ";
+
+                result = result + row;
+
+            }
+
+            result = result + "@";
+
+            result.replace(", @", " ]");
+
+            rs.close();
+            statement.close();
+
+            return result;
+
+        } catch (SQLException e) {
+            System.err.println(e);
+        }
+        return "Ошибка";
+    }
+
     public String getLogin() {
         return login;
     }
